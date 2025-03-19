@@ -2,28 +2,50 @@
 const API_KEY = '06ef3cc42959f1107836bccb0f153ba7';
 const BASE_URL = 'https://api.openweathermap.org/data/2.5';
 const GEO_URL = 'https://api.openweathermap.org/geo/1.0';
+const UPDATE_INTERVAL = 10000; // Update every 10 seconds
 
 // DOM Elements
 const cityInput = document.getElementById('city_input');
 const searchBtn = document.getElementById('searchBtn');
 const locationBtn = document.getElementById('locationBtn');
+const updateStatus = document.getElementById('update-status');
+const statusText = document.getElementById('status-text');
+
+// Variables to store current location
+let currentLat = null;
+let currentLon = null;
+let currentCity = 'London'; // Default city
+let updateTimer = null;
+let isUpdating = false;
+let lastUpdateTime = null;
 
 // Event Listeners
 searchBtn.addEventListener('click', () => {
     const city = cityInput.value.trim();
     if (city) {
+        currentCity = city;
+        currentLat = null;
+        currentLon = null;
+        setUpdatingStatus(true);
         getWeatherData(city);
+        resetUpdateTimer();
     }
 });
 
 locationBtn.addEventListener('click', () => {
     if (navigator.geolocation) {
+        setUpdatingStatus(true);
         navigator.geolocation.getCurrentPosition(
             position => {
                 const { latitude, longitude } = position.coords;
+                currentLat = latitude;
+                currentLon = longitude;
+                currentCity = null;
                 getWeatherDataByCoords(latitude, longitude);
+                resetUpdateTimer();
             },
             error => {
+                setUpdatingStatus(false);
                 alert('Error getting location: ' + error.message);
             }
         );
@@ -31,6 +53,55 @@ locationBtn.addEventListener('click', () => {
         alert('Geolocation is not supported by your browser');
     }
 });
+
+// Set updating status visual indicator
+function setUpdatingStatus(updating) {
+    isUpdating = updating;
+    if (updating) {
+        updateStatus.classList.add('updating');
+        statusText.textContent = 'Updating weather data...';
+    } else {
+        updateStatus.classList.remove('updating');
+        statusText.textContent = 'Auto-updates enabled';
+    }
+}
+
+// Reset update timer
+function resetUpdateTimer() {
+    if (updateTimer) {
+        clearInterval(updateTimer);
+    }
+    
+    updateTimer = setInterval(() => {
+        updateWeatherData();
+    }, UPDATE_INTERVAL);
+    
+    // Create counter for next update
+    startUpdateCountdown(UPDATE_INTERVAL / 1000);
+}
+
+// Start countdown for next update
+function startUpdateCountdown(seconds) {
+    let counter = seconds;
+    const countdownInterval = setInterval(() => {
+        counter--;
+        if (counter <= 0) {
+            clearInterval(countdownInterval);
+        } else if (!isUpdating) {
+            statusText.textContent = `Next update in ${counter} seconds`;
+        }
+    }, 1000);
+}
+
+// Update current weather data based on last search
+function updateWeatherData() {
+    setUpdatingStatus(true);
+    if (currentLat !== null && currentLon !== null) {
+        getWeatherDataByCoords(currentLat, currentLon);
+    } else if (currentCity) {
+        getWeatherData(currentCity);
+    }
+}
 
 // Fetch weather data by city name
 async function getWeatherData(city) {
@@ -40,6 +111,7 @@ async function getWeatherData(city) {
         const geoData = await geoResponse.json();
         
         if (geoData.length === 0) {
+            setUpdatingStatus(false);
             alert('City not found');
             return;
         }
@@ -47,6 +119,7 @@ async function getWeatherData(city) {
         const { lat, lon } = geoData[0];
         getWeatherDataByCoords(lat, lon);
     } catch (error) {
+        setUpdatingStatus(false);
         console.error('Error fetching weather data:', error);
         alert('Error fetching weather data');
     }
@@ -55,26 +128,47 @@ async function getWeatherData(city) {
 // Fetch weather data by coordinates
 async function getWeatherDataByCoords(lat, lon) {
     try {
+        // Add timestamp to prevent caching
+        const timestamp = new Date().getTime();
+        
         // Fetch current weather
         const currentWeatherResponse = await fetch(
-            `${BASE_URL}/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+            `${BASE_URL}/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&_=${timestamp}`
         );
         const currentWeather = await currentWeatherResponse.json();
 
         // Fetch 5-day forecast
         const forecastResponse = await fetch(
-            `${BASE_URL}/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+            `${BASE_URL}/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&_=${timestamp}`
         );
         const forecast = await forecastResponse.json();
 
         // Fetch air pollution data
         const airPollutionResponse = await fetch(
-            `${BASE_URL}/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`
+            `${BASE_URL}/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}&_=${timestamp}`
         );
         const airPollution = await airPollutionResponse.json();
 
-        updateUI(currentWeather, forecast, airPollution);
+        // Check if data has actually changed
+        const currentTemp = Math.round(currentWeather.main.temp);
+        const lastTemp = lastUpdateTime ? document.querySelector('.current-weather h2').textContent.replace('°C', '') : null;
+        
+        if (lastTemp !== currentTemp.toString()) {
+            console.log(`Temperature changed from ${lastTemp}°C to ${currentTemp}°C`);
+            updateUI(currentWeather, forecast, airPollution);
+            lastUpdateTime = new Date();
+        } else {
+            console.log('No temperature change detected');
+        }
+        
+        // Update page title with current temperature and city
+        document.title = `${currentTemp}°C - ${currentWeather.name} | Weather App`;
+        
+        // Set updating status to false after data is loaded
+        setUpdatingStatus(false);
+        
     } catch (error) {
+        setUpdatingStatus(false);
         console.error('Error fetching weather data:', error);
         alert('Error fetching weather data');
     }
@@ -178,9 +272,39 @@ function updateUI(currentWeather, forecast, airPollution) {
         hourlyCards[index].querySelector('p:last-child').textContent = 
             `${Math.round(hour.main.temp)}°C`;
     });
+    
+    // Add last updated time indicator
+    updateLastUpdatedTime();
+}
+
+// Update the last updated time
+function updateLastUpdatedTime() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        second: '2-digit'
+    });
+    
+    // Create or update last updated element
+    let lastUpdatedElement = document.getElementById('last-updated');
+    if (!lastUpdatedElement) {
+        lastUpdatedElement = document.createElement('div');
+        lastUpdatedElement.id = 'last-updated';
+        lastUpdatedElement.style.textAlign = 'center';
+        lastUpdatedElement.style.padding = '5px';
+        lastUpdatedElement.style.marginBottom = '10px';
+        lastUpdatedElement.style.fontSize = '12px';
+        lastUpdatedElement.style.color = '#999';
+        document.querySelector('.container').appendChild(lastUpdatedElement);
+    }
+    
+    lastUpdatedElement.textContent = `Last updated: ${timeString}`;
 }
 
 // Initialize with a default city on page load
 window.addEventListener('load', () => {
+    setUpdatingStatus(true);
     getWeatherData('London'); // Default city when the page loads
+    resetUpdateTimer();
 });
