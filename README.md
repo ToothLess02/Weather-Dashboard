@@ -1,263 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
-    <link href="https:pro.fontawesome.com/releases/v6.0.0-beta3/css/all.css" 
-    rel="stylesheet">
-    <link href="https:unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h2>Weather</h2>
-            <div class="weather-input">
-                <input type="text" name="city" id="city_input" placeholder="Enter City Name">
-                <button type="button" id="searchBtn">
-                    <i class="fa-regular.fa-search"></i> Search
-                </button>
-                <button type="button" id="locationBtn">
-                    <i class="bx bx-target-lock"></i> Current Location
-                </button>
-            </div>
-        </div>
-        <div id="update-status" class="update-status">
-            <span class="status-dot"></span>
-            <span id="status-text">Auto-updates enabled</span>
-        </div>
-        <div class="weather-data">
-            <div class="weather-left">
-                <div class="card">
-                    <div class="current-weather">
-                        <div class="details">
-                            <p>Now</p>
-                            <h2>___&deg;C</h2>
-                            <p>_____</p>
-                        </div>
-                        <div class="weather-icon">
-                            <img src="https://openweathermap.org/img/wn/04d@2x.png" 
-                            alt="">
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="card-footer">
-                        <p><i class="fa-light fa-calendar"></i> _____</p>
-                        <p><i class="fa-light fa-location-dot"></i> _____</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <h2>5 days forecast</h2>
-                    <div class="day-forecast">
-                        <div class="forecast-item">
-                            <div class="icon-wrapper">
-                                <img src="https://openweathermap.org/img/wn/02d.png"
-                                alt="">
-                                 <span>___&deg;C</span>
-                            </div>
-                            <p>____</p>
-                            <p>____</p>
-                        </div>
-                        <div class="forecast-item">
-                            <div class="icon-wrapper">
-                                <img src="https://openweathermap.org/img/wn/02d.png"
-                                alt="">
-                                 <span>___&deg;C</span>
-                            </div>
-                            <p>____</p>
-                            <p>____</p>
-                        </div><div class="forecast-item">
-                            <div class="icon-wrapper">
-                                <img src="https://openweathermap.org/img/wn/02d.png"
-                                alt="">
-                                 <span>___&deg;C</span>
-                            </div>
-                            <p>____</p>
-                            <p>____</p>
-                        </div>
-                        <div class="forecast-item">
-                            <div class="icon-wrapper">
-                                <img src="https://openweathermap.org/img/wn/02d.png"
-                                alt="">
-                                 <span>___&deg;C</span>
-                            </div>
-                            <p>____</p>
-                            <p>____</p>
-                        </div>
-                        <div class="forecast-item">
-                            <div class="icon-wrapper">
-                                <img src="https://openweathermap.org/img/wn/02d.png"
-                                alt="">
-                                 <span>___&deg;C</span>
-                            </div>
-                            <p>____</p>
-                            <p>____</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="weather-right">
-                <h2>Today's Highlights</h2>
-                <div class="highlights">
-                    <div class="card">
-                        <div class="card-head">
-                            <p>Air Quality Index</p>
-                            <p class="air-index aqi-1">good</p>
-                        </div>
-                        <div class="air-indices">
-                            <i class="fa-regular fa-wind fa-3x"></i>
-                            <div class="item">
-                                <p>PM2.5</p>
-                                <h2>____</h2>
-                            </div>
-                            <div class="item">
-                                <p>PM10</p>
-                                <h2>____</h2>
-                            </div>
-                            <div class="item">
-                                <p>SO2</p>
-                                <h2>____</h2>
-                            </div>
-                            <div class="item">
-                                <p>CO</p>
-                                <h2>____</h2>
-                            </div>
-                            <div class="item">
-                                <p>NO</p>
-                                <h2>____</h2>
-                            </div>
-                            <div class="item">
-                                <p>NO2</p>
-                                <h2>____</h2>
-                            </div>
-                            <div class="item">
-                                <p>NH3</p>
-                                <h2>____</h2>
-                            </div>
-                            <div class="item">
-                                <p>O3</p>
-                                <h2>____</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-head"> 
-                            <p>Sunrise & Sunset</p>
-                        </div>
-                        <div class="sunrise-sunset">
-                            <div class="item"> 
-                                <div class="icon">
-                                    <i class="fa-light fa-sunrise fa-4x"></i>
-                                </div>
-                                <div>
-                                    <p>Sunrise</p>
-                                    <h2>____</h2>
-                                </div>
-                            </div>
-                            <div class="item"> 
-                                <div class="icon">
-                                    <i class="fa-light fa-sunset fa-4x"></i>
-                                </div>
-                                <div>
-                                    <p>Sunset</p>
-                                    <h2>____</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-head"> 
-                            <p>Humidity</p>
-                        </div>
-                        <div class="card-item">
-                            <i class="fa-light fa-droplet fa-2x"></i>
-                            <h2 id="humidityval">____% </h2>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-head"> 
-                            <p>Pressure</p>
-                        </div>
-                        <div class="card-item">
-                            <i class="fa-light fa-compass fa-2x"></i>
-                            <h2 id="pressureval">____hpa </h2>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-head"> 
-                            <p>Visibility</p>
-                        </div>
-                        <div class="card-item">
-                            <i class="fa-light fa-eye fa-2x"></i>
-                            <h2 id="visibilityval">____km </h2>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-head"> 
-                            <p>Wind Speed</p>
-                        </div>
-                        <div class="card-item">
-                            <i class="fa-light fa-location fa-2x"></i>
-                            <h2 id="windspeedval">____m/s </h2>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-head"> 
-                            <p>Feels Like</p>
-                        </div>
-                        <div class="card-item">
-                            <i class="fa-light fa-temperature-list fa-2x"></i>
-                            <h2 id="feelsval">____&deg;C </h2>
-                        </div>
-                    </div>
-                </div>
-                <h2>Today at</h2>
-                <div class="hourly-forecast">
-                    <div class="card"> 
-                        <p>9 AM</p>
-                        <img src="https://openweathermap.org/img/wn/04d.png" alt="">
-                        <p>___&deg;C</p>
-                    </div>
-                    <div class="card"> 
-                        <p>9 AM</p>
-                        <img src="https://openweathermap.org/img/wn/04d.png" alt="">
-                        <p>___&deg;C</p>
-                    </div>
-                    <div class="card"> 
-                        <p>9 AM</p>
-                        <img src="https://openweathermap.org/img/wn/04d.png" alt="">
-                        <p>___&deg;C</p>
-                    </div>
-                    <div class="card"> 
-                        <p>9 AM</p>
-                        <img src="https://openweathermap.org/img/wn/04d.png" alt="">
-                        <p>___&deg;C</p>
-                    </div>
-                    <div class="card"> 
-                        <p>9 AM</p>
-                        <img src="https://openweathermap.org/img/wn/04d.png" alt="">
-                        <p>___&deg;C</p>
-                    </div>
-                    <div class="card"> 
-                        <p>9 AM</p>
-                        <img src="https://openweathermap.org/img/wn/04d.png" alt="">
-                        <p>___&deg;C</p>
-                    </div>
-                    <div class="card"> 
-                        <p>9 AM</p>
-                        <img src="https://openweathermap.org/img/wn/04d.png" alt="">
-                        <p>___&deg;C</p>
-                    </div>
-                    <div class="card"> 
-                        <p>9 AM</p>
-                        <img src="https://openweathermap.org/img/wn/04d.png" alt="">
-                        <p>___&deg;C</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
+# Real-Time Weather App
+
+A modern, responsive weather application that provides real-time weather updates with automatic data refresh every 10 seconds.
+
+![Weather App Screenshot showing Delhi weather at 29°C with poor air quality, 5-day forecast, and detailed weather metrics including PM2.5, PM10, humidity at 28%, and wind speed of 3.6m/s](weather-app-screenshot.png)
+
+## Features
+
+- **Live Weather Updates**: Data refreshes automatically every 10 seconds
+- **Current Weather Conditions**: Temperature, weather description, and weather icon
+- **5-Day Forecast**: Extended weather forecast with daily temperatures
+- **Today's Highlights**: Comprehensive weather data including:
+  - Air Quality Index with detailed pollution components
+  - Sunrise and Sunset times
+  - Humidity, Pressure, Visibility
+  - Wind Speed
+  - "Feels Like" temperature
+- **Hourly Forecast**: 8-hour forecast for the current day
+- **Search by City**: Look up weather for any city worldwide
+- **Current Location**: Get weather for your current location with geolocation
+- **Visual Status Indicators**: Shows when data is being updated
+- **Responsive Design**: Works on desktop, tablet, and mobile devices
+
+## Technologies Used
+
+- HTML5
+- CSS3 (with modern features like CSS variables and nested selectors)
+- JavaScript (ES6+)
+- OpenWeatherMap API
+  - Current Weather API
+  - 5-Day Forecast API
+  - Air Pollution API
+  - Geocoding API
+
+## API Usage
+
+This project uses the following OpenWeatherMap APIs:
+
+1. **Geocoding API**: Convert city names to geographic coordinates
+2. **Current Weather API**: Get current weather data
+3. **5-Day Forecast API**: Get 5-day forecast data
+4. **Air Pollution API**: Get air quality information
+
+## Live Update System
+
+The application implements a real-time update system that:
+
+- Refreshes weather data every 10 seconds
+- Shows visual indicators when data is being updated
+- Provides a countdown timer to the next update
+- Prevents browser caching to ensure fresh data
+- Logs data changes in the console for debugging
+
+## Installation and Setup
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/ToothLess02/Weather-Dashboard.git
+   ```
+
+2. Open the project folder:
+   ```
+   cd Weather-Dashboard
+   ```
+
+3. Open `index.html` in your browser or use a local development server.
+
+4. (Optional) Replace the API key in `script.js` with your own OpenWeatherMap API key if you plan to deploy the application.
+
+## Usage
+
+- **Search for a City**: Enter a city name in the search box and click "Search"
+- **Use Current Location**: Click the "Current Location" button to get weather for your current location
+- **View Detailed Information**: Scroll through the dashboard to see all weather details
+- **Watch for Updates**: The status indicator at the top shows when data is being updated
+
+## Browser Compatibility
+
+The application works on all modern browsers:
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## Future Improvements
+
+- Add ability to switch between Celsius and Fahrenheit
+- Implement dark/light theme toggle
+- Add weather alerts and notifications
+- Create user accounts to save favorite locations
+- Add historical weather data
+- Implement weather maps
+
+## License
+
+MIT License
+
+## Acknowledgments
+
+- Weather data provided by [OpenWeatherMap](https://openweathermap.org/)
+- Icons from [Font Awesome](https://fontawesome.com/) and [Boxicons](https://boxicons.com/)
