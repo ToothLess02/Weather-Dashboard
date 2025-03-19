@@ -55,7 +55,7 @@ The application implements a real-time update system that:
 
 1. Clone the repository:
    ```
-   git clone https://github.com/ToothLess02/Weather-Dashboard.git
+   [git clone https://github.com/ToothLess02/Weather-Dashboard.git](https://github.com/ToothLess02/Weather-Dashboard)
    ```
 
 2. Open the project folder:
