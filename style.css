@@ -60,6 +60,50 @@ hr{
         cursor: pointer;
     }
 }
+
+/* Update status indicator */
+.update-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    margin-bottom: 15px;
+    background-color: var(--bg-color2);
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #4CAF50;
+    margin-right: 8px;
+    animation: pulse 2s infinite;
+}
+
+.updating .status-dot {
+    background-color: #FFC107;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+#last-updated {
+    background-color: var(--bg-color2);
+    border-radius: 15px;
+    margin-top: 15px;
+}
+
 .card{
     background-color: var(--bg-color2);
     padding: 15px;
